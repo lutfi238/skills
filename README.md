@@ -1,11 +1,11 @@
-# context-skills
+# context
 
-[![skills.sh](https://skills.sh/b/lutfi238/context-skills)](https://skills.sh/lutfi238/context-skills)
+[![skills.sh](https://skills.sh/b/lutfi238/context)](https://skills.sh/lutfi238/context)
 
 Agent skills for keeping a codebase documented well enough that an agent doesn't have to guess.
 
 ```bash
-npx skills add lutfi238/context-skills
+npx skills add lutfi238/context
 ```
 
 Works with Claude Code, Cursor, Codex, Copilot, Windsurf, Gemini, Zed, Cline, OpenCode, and everything else the `skills` CLI supports.

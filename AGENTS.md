@@ -1,6 +1,7 @@
-# context-skills
+# context
 
-A repository of agent skills, distributed through the `skills` CLI. Every file here is markdown read by an agent at runtime — there is no build step and no code.
+A repository of agent skills, distributed through the `skills` CLI as
+`lutfi238/context`. Every file here is markdown read by an agent at runtime — there is no build step and no code.
 
 ## Documentation protocol
 
