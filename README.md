@@ -1,7 +1,5 @@
 # skills
 
-[![skills.sh](https://skills.sh/b/lutfi238/skills)](https://skills.sh/lutfi238/skills)
-
 Agent skills, installable into any agent the `skills` CLI supports — Claude Code, Cursor, Codex, Copilot, Windsurf, Gemini, Zed, Cline, OpenCode, and the rest.
 
 ```bash
