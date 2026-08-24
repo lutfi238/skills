@@ -108,12 +108,18 @@ Only rules that genuinely hold in every directory. The test: name a directory wh
 
 Concrete and checkable. "Write clean code" is not a rule; it is decoration.
 
-## `CLAUDE.md`
+## Agent-specific files
 
-Claude Code reads `CLAUDE.md` in addition to `AGENTS.md`. Do not duplicate the rail into it. It contains a pointer and nothing else:
+**Never create one.** `AGENTS.md` is the deliverable. Generating `CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md` on a user's behalf litters their repo with vendor files they did not ask for.
+
+If one **already exists**, treat it as a source during Adopt: fold its real content into the rail, then leave it in place. Do not rewrite it and do not delete it — the user put it there.
+
+One case needs reporting rather than action. Claude Code reads `CLAUDE.md`, not `AGENTS.md`, so on that client the rail is invisible without a bridge file. When the repo has no `CLAUDE.md`, say so in your report and give the user the line to add if they want it:
 
 ```md
-See [AGENTS.md](./AGENTS.md).
+@AGENTS.md
 ```
 
-Same for any other agent-specific instruction file already in the repo — `.cursorrules`, `.github/copilot-instructions.md`. Fold real content into the rail, leave a pointer behind. One source of truth or the copies drift apart within weeks.
+That `@` prefix is an import — Claude Code expands the file into context at session start. A markdown link like `See [AGENTS.md](./AGENTS.md)` does **not** work: it is loaded as literal text, not followed. If a repo already contains a `CLAUDE.md` using the link form, flag it as broken during a drift pass.
+
+Whatever exists, keep one source of truth. Never maintain the same prose in two files — the copies drift apart within weeks.

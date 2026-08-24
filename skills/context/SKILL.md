@@ -59,7 +59,7 @@ State which route you took and why before writing anything.
 2. **Add only the `context/` files you can fill.** Start with `architecture.md`, `workflows.md`, and `gotchas.md` — these have the highest value per token and are usually verifiable from the code. Add `glossary.md` when the domain has real vocabulary, `conventions.md` when the codebase has consistent unwritten style. Skip a file rather than pad it. Formats in `references/CONTEXT-FILES.md`.
 3. **Create child `AGENTS.md` only at lasting boundaries** — a directory with its own purpose, its own rules, or its own contract with the rest of the system. Format in `references/AGENTS-CHILD.md`. Three well-placed child docs beat fifteen that restate the rail.
 4. **Index everything.** Every `context/` file and every child `AGENTS.md` gets a line in the rail's index with a short "read this when…" hook. Unindexed means invisible.
-5. **Point Claude at the rail.** If `CLAUDE.md` is absent, create it containing only a pointer to `AGENTS.md`. If it exists with real content, fold that content into the rail and replace it with the pointer. Never maintain the same prose twice.
+5. **Never create agent-specific instruction files.** Not `CLAUDE.md`, not `.cursorrules`, not `.github/copilot-instructions.md`. `AGENTS.md` is the deliverable. Some clients need a bridge file to see it — say so in your report and give the user the exact line, but let them decide. See `references/AGENTS-ROOT.md`.
 
 No ADRs on bootstrap. You don't know why past decisions were made — say so with a `TODO(human)` marker instead of guessing.
 

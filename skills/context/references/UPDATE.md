@@ -69,6 +69,10 @@ Each term should still appear in the code. A term nothing uses anymore is either
 
 Every `TODO(human)` marker: has the answer since become derivable from the code, or did the user answer it in conversation? Fill it in and remove the marker. Markers that sit unanswered for months should be either rewritten as a sharper question or dropped.
 
+### 10. Broken bridge files
+
+If the repo has a `CLAUDE.md` whose only job is to point at the rail, check it uses the import form `@AGENTS.md`. The markdown-link form — `See [AGENTS.md](./AGENTS.md)` — is loaded as literal text and never followed, so the rail silently never reaches Claude Code. Report it; fix it only if the user asks.
+
 ## Amend, never regenerate
 
 - Change the wrong lines. Leave everything else byte-identical.
