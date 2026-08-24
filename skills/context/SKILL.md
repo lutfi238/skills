@@ -38,6 +38,7 @@ Why the split: local rules belong next to the code so they get updated when that
 Never write a doc from a skim. Establish, from the repo itself:
 
 - **Existing docs.** `AGENTS.md`, `CLAUDE.md`, `README.md`, `CONTEXT.md`, `.cursorrules`, `.github/copilot-instructions.md`, `docs/`, and any nested `AGENTS.md`.
+- **Whether agent docs are gitignored.** Check `.gitignore` for `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and similar. A repo that ignores them has decided agent docs stay local and uncommitted. Honour that: write the docs, leave `.gitignore` alone, and say in your report that they are untracked by project policy.
 - **Project type and manifest.** `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `composer.json`, etc. Pull the real script names from it.
 - **Real boundaries.** Which top-level directories are actual modules with their own purpose, versus incidental folders.
 - **Commands that work.** Read them out of the manifest or CI config. Do not invent a `npm test` that isn't there.
@@ -89,6 +90,9 @@ When invoked after a code change rather than as a standalone audit, scope the pa
 
 ## Hard rules
 
+- **Touch only `AGENTS.md` files and `context/`.** Nothing else. Not `.gitignore`, not `README.md`, not source, not config — even when you spot something wrong in them. Report it instead. A documentation pass that edits unrelated files is indistinguishable from an agent going off-task, and it is the fastest way to lose a user's trust in the tool.
+- **Never delete or rewrite an existing agent file.** `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, `.windsurfrules`, a hand-written `AGENTS.md` — read them, fold their content into the rail, and leave the originals exactly as they are. The user put them there.
+- **Never create an agent-specific instruction file.** `AGENTS.md` and `context/` are the deliverable. Report the bridge line for other clients; let the user add it.
 - **Write only what you verified.** Everything else is a `> TODO(human): <specific question>` marker. Docs that are confidently wrong are worse than absent, because the next agent trusts them.
 - **An empty section beats an invented one.** Leave the heading, leave it blank.
 - **Never overwrite a doc wholesale.** Amend the lines that are wrong. Hand-written "why" is the most valuable content in any of these files and regeneration destroys it.

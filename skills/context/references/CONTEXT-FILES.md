@@ -4,11 +4,15 @@ Facts true of the whole project, or of no particular directory. Everything here 
 
 Create a file only when you can fill it from the code. Six honest files beat nine padded ones.
 
+**Prefer indexing over duplicating.** If the repo's `README.md` or `docs/` already covers something well — architecture, setup, commands — index it from the rail with a "read this when…" hook instead of restating it in a `context/` file. A second copy is a second thing to drift. Write a `context/` file only for what no existing doc covers.
+
 ---
 
 ## `context/README.md`
 
-The index of this folder. One line per file, each saying when to read it. Mirrors the rail's cross-cutting index; keep the two consistent.
+The index of this folder. One line per file, each saying when to read it.
+
+**Only create it once `context/` holds three or more files.** Below that it just restates the rail's cross-cutting index, and two indexes with identical content are the duplication the protocol forbids — plus a second place to forget to update.
 
 ---
 
