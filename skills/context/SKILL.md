@@ -91,7 +91,7 @@ When invoked after a code change rather than as a standalone audit, scope the pa
 ## Hard rules
 
 - **Touch only `AGENTS.md` files and `context/`.** Nothing else. Not `.gitignore`, not `README.md`, not source, not config — even when you spot something wrong in them. Report it instead. A documentation pass that edits unrelated files is indistinguishable from an agent going off-task, and it is the fastest way to lose a user's trust in the tool.
-- **Never delete or rewrite an existing agent file.** `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, `.windsurfrules`, a hand-written `AGENTS.md` — read them, fold their content into the rail, and leave the originals exactly as they are. The user put them there.
+- **Never delete or rewrite an existing agent file on your own initiative.** `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, `.windsurfrules`, a hand-written `AGENTS.md` — read them, fold their content into the rail, and leave the originals exactly as they are. The user put them there. If the user asks you to remove one, do it — this rule constrains what you do unasked.
 - **Never create an agent-specific instruction file.** `AGENTS.md` and `context/` are the deliverable. Report the bridge line for other clients; let the user add it.
 - **Write only what you verified.** Everything else is a `> TODO(human): <specific question>` marker. Docs that are confidently wrong are worse than absent, because the next agent trusts them.
 - **An empty section beats an invented one.** Leave the heading, leave it blank.
