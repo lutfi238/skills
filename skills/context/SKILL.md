@@ -80,27 +80,40 @@ claims agree with current code/config → uncovered facts. Do not index a docume
 authority when a relevant claim conflicts with the repository; report the conflict and
 index a reliable source instead, or leave that subject without an authority.
 
-Before the first write, send the user a proof ledger for every proposed exceptional
-claim:
+When an architecture or ownership entry groups multiple paths, verify that its stated
+responsibility is true for every path in the group. Split mixed groups rather than
+assigning one path's purpose to its neighbours; directory names and partial overlap do
+not prove shared responsibility.
+
+Before the first write, send the user a proof ledger for newly authored factual claims
+that are exceptional:
 
 - **Absolute** — quote each use of `all`, `every`, `never`, `only`, `full`,
   `deliberate`, `broken`, or `does not sync`, and name the complete surface checked.
-- **Intent or history** — quote the claim and cite the user or human-authored source.
+- **Human intent, purpose, scope, recommendation, or history** — quote claims about
+  why the project exists, its intended audience or use, workflows authors endorse or
+  limit, and historical rationale. Cite the user or human-authored source; observed
+  implementation proves behaviour, not these claims.
 - **Naming prohibition** — list each proposed glossary `_Avoid_` term and cite the user
   or human-authored source that rejects it. Code usage or the absence of an alias is not
   authority for a naming ban.
 
-Narrow or omit any entry without the required proof. An empty ledger is valid.
+Inspect prose introduced by this pass. Exclude mandatory verbatim protocol or template
+text supplied by this skill, literal commands, flags, paths, identifiers, and
+byte-preserved human prose; those retain their existing authority. If the pass changes
+the meaning of preserved prose, ledger the newly introduced meaning. Narrow or omit any
+included claim without the required proof. An empty ledger is valid.
 
 Then pick a route:
 
 | Repo state | Route |
 | --- | --- |
-| No agent docs at all | **Bootstrap** |
-| `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or `docs/` exist with real content | **Adopt** |
-| Rail + `context/` already in place | **Update** |
+| A usable rail and indexed context graph already exist | **Update** |
+| No usable rail, but dedicated human-authored guidance exists: agent instructions, `docs/`, contributing guides, policies, specifications, or standalone guides/FAQs | **Adopt** |
+| No usable rail, and existing documentation is limited to ordinary entry points such as a README, manifests, CI configuration, or none | **Bootstrap** |
 
-State which route you took and why before writing anything.
+Evaluate the rows from top to bottom. A README alone does not select Adopt. State which
+route you took and why before writing anything.
 
 ## Bootstrap
 
@@ -147,8 +160,9 @@ When invoked after a code change rather than as a standalone audit, scope the pa
 - **Never delete or rewrite an existing agent file on your own initiative.** `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, `.windsurfrules`, a hand-written `AGENTS.md` — read them, fold their content into the rail, and leave the originals exactly as they are. The user put them there. If the user asks you to remove one, do it — this rule constrains what you do unasked.
 - **Never create an agent-specific instruction file.** `AGENTS.md` and `context/` are the deliverable. Report the bridge line for other clients; let the user add it.
 - **Write only what you verified from a repository source of truth or the user.** Everything else is a `> TODO(human): <specific question>` marker. Implementation proves current behavior, not product intent or historical reasoning. Docs that are confidently wrong are worse than absent, because the next agent trusts them.
-- **The proof ledger is a write gate.** Missing authority means narrow or omit the
-  claim; it never means infer intent, history, or a naming ban from implementation.
+- **The proof ledger gates newly authored factual claims.** Apply its exemptions
+  exactly; outside them, missing authority means narrow or omit the claim, never infer
+  intent, history, or a naming ban from implementation.
 - **An empty section beats an invented one.** Leave the heading, leave it blank.
 - **Never overwrite a doc wholesale.** Amend the lines that are wrong. Hand-written "why" is the most valuable content in any of these files and regeneration destroys it.
 - **Stable contracts, not diary entries.** Docs describe how things are now. Delete superseded statements instead of narrating the change. `context/decisions/` is the one exception — that is where history is allowed to live.
