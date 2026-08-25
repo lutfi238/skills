@@ -70,6 +70,11 @@ Two groups. Every entry needs a "read this when…" hook — without one, an age
 
 The cross-cutting group may point directly to an authoritative existing `README.md`, PRD, specification, schema, or document under `docs/`. Index the source instead of copying it into `context/`. Include `context/README.md` only when that folder has three or more indexed entries besides the README itself.
 
+Verify the relevant claims before calling an existing document authoritative. When it
+conflicts with code/config or another current source, report the drift and do not route
+agents to it for that subject. An index gives a document authority; link integrity alone
+is not enough.
+
 ```md
 ## Index
 
@@ -95,6 +100,11 @@ The cross-cutting group may point directly to an authoritative existing `README.
 ```
 
 Both directions must hold for agent-context docs: every nested `AGENTS.md` and every `context/` entry on disk appears here, and every entry here exists on disk. Existing project docs appear when they carry agent-relevant context; do not index every document indiscriminately. A broken index is worse than no index — it teaches the agent to stop trusting the rail.
+
+Trackability is part of reachability. Check each indexed agent-context path against all
+effective ignore rules, including nested `.gitignore` files. An ignored child rail may
+work locally while leaving a broken index after commit or on a fresh clone; identify it
+as local-only in the report and leave the ignore policy unchanged.
 
 ## Project-wide rules
 

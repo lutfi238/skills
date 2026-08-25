@@ -59,7 +59,12 @@ Write what the code does, not what the design intended. If the boundary is viola
 
 ## `context/workflows.md`
 
-Commands that actually work, taken from the manifest or CI config. Never invented.
+Commands declared by the manifest or CI config, with execution status stated separately.
+Never invent a command or claim it passed without running it.
+
+Distinguish provenance from execution. Label a manifest or CI command as **declared**.
+Say **verified**, **passing**, or “ran successfully” only when the current pass executed
+that exact command successfully. A source lookup cannot prove runtime behavior.
 
 ```md
 # Workflows
@@ -168,6 +173,10 @@ a display-level grouping with no billing meaning.
 ```
 
 One or two sentences. Define what it **is**. `_Avoid_` lists the words this project has decided not to use for the concept — that is what keeps naming consistent.
+
+Only include `_Avoid_` when a human-authored project document or the user explicitly
+states the rejected term. Similar concepts in code prove a distinction, not a naming
+ban; unsupported prohibitions create vocabulary the project never chose.
 
 Skip this file if the domain is generic. A glossary of `User`, `Post`, `Comment` is noise.
 

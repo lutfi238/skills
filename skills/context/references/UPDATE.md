@@ -12,6 +12,16 @@ The principle: **a doc is a set of assertions about the repo, and most of them a
 
 ## Checks
 
+### 0. Baseline and write-set gate
+
+Record changed and untracked paths before the pass. Declare every path this pass intends
+to edit. Allowed targets match `(^|/)AGENTS\.md$` or `^context/`; useful fixes in README,
+docs, manifests, source, ignore files, or vendor instructions go in the report instead.
+
+At closeout, compare the initial baseline, declared targets, and actual attributable
+changes. An out-of-allowlist path means the pass is not complete. Revert only an isolated
+edit made by this pass; never erase a pre-existing user change to repair the write set.
+
 ### 1. Path claims
 
 Extract every repo path mentioned in every doc — code fences, links, inline backticks. Confirm each exists.
@@ -30,12 +40,16 @@ Every command in `workflows.md`, in any `Verify` section, and in the rail. Check
 - CI runs a command the docs don't mention → add it.
 
 Do not run destructive or long commands to verify them. Reading the manifest is the check.
+Call a command **declared** when sourced from a manifest or CI. Call it **verified** or
+**passing** only when this pass executed it successfully. Never write broad execution
+claims such as “all commands were run” unless the command log proves each one.
 
 ### 3. Index integrity — both directions
 
 - Every entry in the rail's index resolves to a file that exists.
 - Every `context/*.md` on disk appears in the rail's index. When `context/` has three or more indexed entries besides its README, every other entry also appears in `context/README.md`; below that threshold, remove the redundant README.
 - Every nested `AGENTS.md` on disk is reachable from the rail through a chain of indexes. Find all of them and trace each one up.
+- Every indexed agent-context path has its effective ignore policy checked, including nested `.gitignore` files. Use `git check-ignore -v --no-index -- <path>` when available. Report each ignored node as local-only and warn when a tracked index will point to a file absent from a fresh clone.
 
 A doc nobody links to gets stale fastest, because nobody reads it to notice.
 
@@ -53,6 +67,11 @@ Also look for new footguns for `gotchas.md`. Signals: a `// don't` or `// HACK` 
 
 Where two docs state the same fact, keep the more specific one and delete the other. Where two docs state *conflicting* facts, determine which is true from the code, fix that one, delete the other, and report the conflict — it usually means a rule was changed in one place and not the other.
 
+Protected existing docs outside the write allowlist are evidence, not edit targets. When
+one conflicts with code/config or another authority, report the stale claim and do not
+index that document for the conflicting subject. Indexing a stale authority makes the
+graph route agents toward known misinformation.
+
 ### 7. Placement violations
 
 Apply the rule in both directions:
@@ -65,6 +84,9 @@ Apply the rule in both directions:
 
 Each term should still appear in the code. A term nothing uses anymore is either renamed — update it — or a concept that was removed — delete it.
 
+An `_Avoid_` alias is a naming prohibition, not a synonym guess. Keep or add one only
+when a human-authored authority or the user explicitly rejects that alias.
+
 ### 9. Answered markers
 
 Every `TODO(human)` marker: has the answer since become derivable from the code, or did the user answer it in conversation? Fill it in and remove the marker. Markers that sit unanswered for months should be either rewritten as a sharper question or dropped.
@@ -72,6 +94,16 @@ Every `TODO(human)` marker: has the answer since become derivable from the code,
 ### 10. Broken bridge files
 
 If the repo has a `CLAUDE.md` whose only job is to point at the rail, check it uses the import form `@AGENTS.md`. The markdown-link form — `See [AGENTS.md](./AGENTS.md)` — is loaded as literal text and never followed, so the rail silently never reaches Claude Code. Report it; fix it only if the user asks.
+
+### 11. Absolutes and intent
+
+Search changed docs for `all`, `every`, `never`, `only`, `full`, `deliberate`, `broken`,
+and `does not sync`. Verify each against the complete relevant surface. Narrow unsupported
+absolutes to the fact the evidence proves.
+
+Code and comments establish behavior, not durable product policy, historical rationale,
+or future maintenance plans. Attribute those claims to an authoritative human source or
+replace them with a specific `TODO(human)` question.
 
 ## Amend, never regenerate
 
@@ -85,13 +117,16 @@ If the repo has a `CLAUDE.md` whose only job is to point at the rail, check it u
 State plainly:
 
 - **Route** — Bootstrap, Adopt, or Update, and why
+- **Baseline / write set** — pre-existing changes, declared targets, and final allowlist result
 - **Reused** — authoritative existing docs indexed instead of copied
 - **Localized** — subjects owned by nested `AGENTS.md` files
+- **Distribution** — ignored or local-only graph nodes and affected indexes
 - **Corrected** — each claim that had drifted, and what it says now
 - **Deleted** — what you removed, and why it was no longer true
 - **Added** — new docs or sections, and what prompted each
 - **Conflicts** — contradictions found, how you resolved them
 - **Unverifiable** — claims you could not check, left in place
+- **Validation** — commands actually run and results, separate from declared commands
 - **Skipped** — relevant docs left untouched and likely context files not created, with why
 - **Clean** — say so if nothing had drifted. That is a real result, and it is the one that tells the user the system is working.
 

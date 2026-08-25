@@ -15,7 +15,7 @@ context/
   README.md                    optional index; only with 3+ other entries
   architecture.md              system shape, module boundaries, data flow
   conventions.md               the unwritten rules
-  workflows.md                 verified build / test / deploy commands
+  workflows.md                 declared build / test / deploy commands
   glossary.md                  domain terms
   gotchas.md                   traps, footguns, do-not-touch
   decisions/ADR-0001-slug.md   why things are the way they are
@@ -42,12 +42,18 @@ Why the split: local rules belong next to the code so they get updated when that
 
 Never write a doc from a skim. Establish, from the repo itself:
 
+- **Baseline and write set.** Record the initial changed paths, including untracked files, so existing user work is never attributed to this run. Before editing, list every intended target. Reject any target that is not an `AGENTS.md` file or inside root `context/`; discovering useful adjacent edits does not expand the allowlist.
 - **Existing docs.** `AGENTS.md`, `CLAUDE.md`, `README.md`, `CONTEXT.md`, `.cursorrules`, `.github/copilot-instructions.md`, `docs/`, any nested `AGENTS.md`, and authoritative product or requirements docs such as `PRD.md`, `REQUIREMENTS.md`, and `SPEC.md`.
-- **Whether agent docs are gitignored.** Check `.gitignore` for `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and similar. A repo that ignores them has decided agent docs stay local and uncommitted. Honour that: write the docs, leave `.gitignore` alone, and say in your report that they are untracked by project policy.
+- **Whether each proposed doc is gitignored.** Check every intended `AGENTS.md` and `context/` path against all applicable ignore files, including nested ones; use `git check-ignore -v --no-index -- <path>` when Git is available. A repo that ignores agent docs has decided they stay local. Honour that: leave ignore files alone, identify each local-only node in the report, and warn when a tracked index points to an ignored node that will be absent from a fresh clone.
 - **Project type and manifest.** `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `composer.json`, etc. Pull the real script names from it.
 - **Real boundaries.** Which top-level directories are actual modules with their own purpose, versus incidental folders.
-- **Commands that work.** Read them out of the manifest or CI config. Do not invent a `npm test` that isn't there.
+- **Declared commands versus executed commands.** Read commands from manifests or CI and label them as declared. Call a command verified only when you actually ran it successfully; do not turn source inspection into execution history.
 - **Enough code to be correct.** Read the entry points and the largest modules. Depth beats coverage.
+
+Build an authority map before creating files: subject → existing source → whether its
+claims agree with current code/config → uncovered facts. Do not index a document as an
+authority when a relevant claim conflicts with the repository; report the conflict and
+index a reliable source instead, or leave that subject without an authority.
 
 Then pick a route:
 
@@ -74,12 +80,14 @@ No ADRs on bootstrap. You don't know why past decisions were made — say so wit
 Existing docs are evidence, and someone wrote them by hand. Preserve the human's words.
 
 1. **Read what's there in full.** Treat it as the current contract.
-2. **Sort each existing claim** by the placement rule: project-wide stays in the rail, directory-specific moves down to a child doc, cross-cutting detail moves into a `context/` file.
-3. **Verify while you move.** Run the drift checks from `references/UPDATE.md` on every claim. A stale claim gets corrected or dropped, not relocated intact.
+2. **Map before moving.** Existing non-agent docs stay byte-identical: index reliable ones and report their drift. For facts already in `AGENTS.md`, prefer leaving true prose in place. Move a placement violation only when it materially harms routing; move the human's sentences verbatim before making a separate surgical correction.
+3. **Verify while you map.** Run the drift checks from `references/UPDATE.md` on every claim. Correct a mechanically false claim only inside the allowed write set. Report conflicts in protected existing docs and do not promote them as authorities.
 4. **Add the protocol block and the index** to the existing `AGENTS.md`. Keep their headings, their tone, their ordering. You are adding structure around their content, not replacing it.
 5. **Fill gaps only.** If they already documented the architecture well, do not rewrite it into your own template.
 
-Never delete a human-written statement because it doesn't fit the template. If it's true, find it a home. If you think it's false, say so in your report and leave it — do not silently drop it.
+Never delete a human-written statement because it doesn't fit the template. If it is
+unverifiable, say so and leave it. If it is mechanically false in an allowed agent doc,
+amend only the false lines and report the correction.
 
 ## Update
 
@@ -97,9 +105,11 @@ When invoked after a code change rather than as a standalone audit, scope the pa
 ## Hard rules
 
 - **Touch only `AGENTS.md` files and `context/`.** Nothing else. Not `.gitignore`, not `README.md`, not source, not config — even when you spot something wrong in them. Report it instead. A documentation pass that edits unrelated files is indistinguishable from an agent going off-task, and it is the fastest way to lose a user's trust in the tool.
+- **Gate every write twice.** Before each edit, match its target against `(^|/)AGENTS\.md$` or `^context/`; reject it otherwise. Before reporting completion, compare the run's actual write set with the declared write set and the initial worktree baseline. Any attributable path outside the allowlist blocks completion; undo only the run's own isolated edit when that can be done without touching pre-existing user work, otherwise stop and report the violation.
 - **Never delete or rewrite an existing agent file on your own initiative.** `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, `.windsurfrules`, a hand-written `AGENTS.md` — read them, fold their content into the rail, and leave the originals exactly as they are. The user put them there. If the user asks you to remove one, do it — this rule constrains what you do unasked.
 - **Never create an agent-specific instruction file.** `AGENTS.md` and `context/` are the deliverable. Report the bridge line for other clients; let the user add it.
 - **Write only what you verified from a repository source of truth or the user.** Everything else is a `> TODO(human): <specific question>` marker. Implementation proves current behavior, not product intent or historical reasoning. Docs that are confidently wrong are worse than absent, because the next agent trusts them.
+- **Treat absolutes as proof obligations.** Before writing `all`, `every`, `never`, `only`, `full`, `deliberate`, `broken`, or `does not sync`, verify the complete relevant surface or replace the absolute with the narrower fact you proved. Absolutes amplify one missed call site into a false contract.
 - **An empty section beats an invented one.** Leave the heading, leave it blank.
 - **Never overwrite a doc wholesale.** Amend the lines that are wrong. Hand-written "why" is the most valuable content in any of these files and regeneration destroys it.
 - **Stable contracts, not diary entries.** Docs describe how things are now. Delete superseded statements instead of narrating the change. `context/decisions/` is the one exception — that is where history is allowed to live.
@@ -112,9 +122,13 @@ When invoked after a code change rather than as a standalone audit, scope the pa
 Close with a coverage report that makes sparse output legible:
 
 - **Route** — Bootstrap, Adopt, or Update, and why.
+- **Baseline / write set** — pre-existing changed paths, declared targets, and confirmation that every attributable edit stayed inside the allowlist.
 - **Reused** — existing README, PRD, specifications, schemas, or docs indexed instead of copied.
 - **Localized** — subjects placed in nested `AGENTS.md` files and the boundaries that own them.
 - **Created / amended** — every changed file and what changed.
+- **Distribution** — ignored or otherwise local-only graph nodes and the indexes that depend on them.
+- **Conflicts** — stale or contradictory protected docs left unchanged and whether they were excluded as authorities.
+- **Validation** — checks actually executed and their outcomes, kept separate from commands merely declared by manifests or CI.
 - **Skipped** — likely context files not created because an existing source already covers them, no verified content exists, or the category does not apply.
 - **Questions** — every `TODO(human)` marker and where it lives.
 - **Untouched** — relevant files deliberately left alone and why.

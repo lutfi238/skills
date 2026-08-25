@@ -61,6 +61,8 @@ You can, and you should keep writing the parts only you know. What this skill ad
 - **Drift detection.** Docs rot silently — nothing fails when a path reference goes stale, the agent just acts on a false claim. `/context` treats each doc as a set of assertions and checks them: do the referenced paths exist, do the named commands still exist in the manifest, does every indexed doc resolve, has a directory become a boundary without a doc.
 - **Amend, never regenerate.** It fixes the lines that are wrong and leaves the rest byte-identical. Your hand-written reasoning is the most valuable content in these files, and regeneration destroys it.
 - **It refuses to guess.** Anything it can't verify from the code becomes a `> TODO(human): <specific question>` marker instead of confident-sounding fiction. Docs that are wrong are worse than docs that are missing, because the next agent trusts them.
+- **A hard write boundary.** It snapshots the existing worktree, declares its targets, and checks the final write set. Only `AGENTS.md` files and root `context/` are eligible; drift found in README, source, config, ignore files, or vendor docs is reported rather than edited.
+- **Reachability beyond links.** It checks nested ignore rules and authority conflicts, so an indexed file must be present in the intended checkout and reliable for the subject its pointer advertises.
 
 ## Credit
 
