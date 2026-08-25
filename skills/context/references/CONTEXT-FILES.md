@@ -2,7 +2,7 @@
 
 Facts true of the whole project, or of no particular directory. Everything here is reachable only through the rail's index — an unindexed file is invisible.
 
-Create a file only when you can fill it from the code. Six honest files beat nine padded ones.
+Create a file only when you can fill it from a repository source of truth or information explicitly supplied by the user. Six honest files beat nine padded ones. One honest file is also a valid result when existing docs and local `AGENTS.md` files cover the rest.
 
 **Prefer indexing over duplicating.** If the repo's `README.md` or `docs/` already covers something well — architecture, setup, commands — index it from the rail with a "read this when…" hook instead of restating it in a `context/` file. A second copy is a second thing to drift. Write a `context/` file only for what no existing doc covers.
 
@@ -12,7 +12,15 @@ Create a file only when you can fill it from the code. Six honest files beat nin
 
 The index of this folder. One line per file, each saying when to read it.
 
-**Only create it once `context/` holds three or more files.** Below that it just restates the rail's cross-cutting index, and two indexes with identical content are the duplication the protocol forbids — plus a second place to forget to update.
+**Only create it once `context/` has three or more indexed entries besides this README. Remove it if an update drops below that threshold.** Below that it just restates the rail's cross-cutting index, and two indexes with identical content are the duplication the protocol forbids — plus a second place to forget to update.
+
+---
+
+## Product and requirements
+
+Prefer indexing an authoritative `PRD.md`, `REQUIREMENTS.md`, specification, or product section in an existing document. Do not copy it into `context/`; a second product contract will drift.
+
+Create `context/product.md` only when the user supplies the product contract and no authoritative file already owns it. Record stable goals, actors, capabilities, non-functional constraints, and explicit out-of-scope boundaries. Never reconstruct requirements, acceptance criteria, or product intent from implemented features — code proves behavior, not why that behavior is required.
 
 ---
 

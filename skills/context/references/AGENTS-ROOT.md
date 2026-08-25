@@ -68,11 +68,15 @@ deliberately left alone.
 
 Two groups. Every entry needs a "read this when…" hook — without one, an agent cannot tell whether it needs the file, so it either reads everything or nothing.
 
+The cross-cutting group may point directly to an authoritative existing `README.md`, PRD, specification, schema, or document under `docs/`. Index the source instead of copying it into `context/`. Include `context/README.md` only when that folder has three or more indexed entries besides the README itself.
+
 ```md
 ## Index
 
 ### Cross-cutting
 
+- [README.md](./README.md) — read for product scope and local setup
+- [PRD.md](./PRD.md) — read before changing product behavior or scope
 - [context/architecture.md](./context/architecture.md) — read before adding a module or
   changing how two modules talk
 - [context/workflows.md](./context/workflows.md) — read before running builds, tests, or
@@ -90,7 +94,7 @@ Two groups. Every entry needs a "read this when…" hook — without one, an age
 - [src/ui/AGENTS.md](./src/ui/AGENTS.md) — React components, routing, client state
 ```
 
-Both directions must hold: every doc on disk appears here, and every entry here exists on disk. A broken index is worse than no index — it teaches the agent to stop trusting the rail.
+Both directions must hold for agent-context docs: every nested `AGENTS.md` and every `context/` entry on disk appears here, and every entry here exists on disk. Existing project docs appear when they carry agent-relevant context; do not index every document indiscriminately. A broken index is worse than no index — it teaches the agent to stop trusting the rail.
 
 ## Project-wide rules
 

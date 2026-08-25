@@ -34,7 +34,7 @@ Do not run destructive or long commands to verify them. Reading the manifest is 
 ### 3. Index integrity — both directions
 
 - Every entry in the rail's index resolves to a file that exists.
-- Every `context/*.md` on disk appears in the rail's index and in `context/README.md`.
+- Every `context/*.md` on disk appears in the rail's index. When `context/` has three or more indexed entries besides its README, every other entry also appears in `context/README.md`; below that threshold, remove the redundant README.
 - Every nested `AGENTS.md` on disk is reachable from the rail through a chain of indexes. Find all of them and trace each one up.
 
 A doc nobody links to gets stale fastest, because nobody reads it to notice.
@@ -84,12 +84,15 @@ If the repo has a `CLAUDE.md` whose only job is to point at the rail, check it u
 
 State plainly:
 
+- **Route** — Bootstrap, Adopt, or Update, and why
+- **Reused** — authoritative existing docs indexed instead of copied
+- **Localized** — subjects owned by nested `AGENTS.md` files
 - **Corrected** — each claim that had drifted, and what it says now
 - **Deleted** — what you removed, and why it was no longer true
 - **Added** — new docs or sections, and what prompted each
 - **Conflicts** — contradictions found, how you resolved them
 - **Unverifiable** — claims you could not check, left in place
-- **Skipped** — docs you deliberately did not touch, and why
+- **Skipped** — relevant docs left untouched and likely context files not created, with why
 - **Clean** — say so if nothing had drifted. That is a real result, and it is the one that tells the user the system is working.
 
-Never report a pass as complete if you only checked some of it. Say which checks you ran.
+Never report a pass as complete if you only checked some of it. Say which checks you ran. Account for coverage across the whole documentation graph; a sparse `context/` folder is not evidence of an incomplete pass.

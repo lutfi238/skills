@@ -60,8 +60,8 @@ deliberately left alone.
 ### By area
 
 - [skills/context/SKILL.md](./skills/context/SKILL.md) — the `/context` skill: bootstrap,
-  adopt, and drift-check a project's agent documentation. Its `references/` hold the
-  formats it emits.
+  adopt, and drift-check a repository's agent-context graph while reusing authoritative
+  project docs. Its `references/` hold the formats it emits.
 
 No child `AGENTS.md` files and no `context/` folder yet — this repo is one skill and
 eight rules, so neither has earned its place. Per

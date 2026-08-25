@@ -10,7 +10,7 @@ npx skills add lutfi238/skills
 
 ### `/context`
 
-Creates, adopts, and maintains a project's agent-facing documentation.
+Creates, adopts, and maintains a repository's agent context as a documentation graph.
 
 ```
 /context
@@ -20,7 +20,7 @@ It surveys the repo first, then picks a route:
 
 | Repo state | What it does |
 | --- | --- |
-| No agent docs | **Bootstraps** the rail, the `context/` folder, and child docs at real boundaries |
+| No agent docs | **Bootstraps** the rail, reuses existing project docs, adds sparse `context/`, and creates child docs at real boundaries |
 | Existing `AGENTS.md` / `CLAUDE.md` / `.cursorrules` | **Adopts** them — adds structure around your words, never overwrites |
 | Docs already in place | **Drift pass** — checks every claim against the repo and fixes what rotted |
 
@@ -29,6 +29,7 @@ It surveys the repo first, then picks a route:
 ```
 AGENTS.md                      the rail: project-wide rules, protocol, index
 context/
+  README.md                    optional index; only with 3+ other entries
   architecture.md              system shape, boundaries, data flow
   workflows.md                 verified build / test / deploy commands
   gotchas.md                   traps, footguns, do-not-touch
@@ -39,13 +40,19 @@ src/api/AGENTS.md              local rules for this boundary
 src/worker/AGENTS.md           local rules for this boundary
 ```
 
+This is not a fixed file scaffold. `/context` indexes an authoritative existing
+`README.md`, PRD, specification, schema, or other project doc instead of copying it.
+It creates a `context/` file only for verified cross-cutting knowledge with no better
+home, so a healthy folder may contain only one file. The coverage report explains what
+was reused, localized, created, and deliberately skipped.
+
 One rule decides where every fact goes:
 
 > **True of one directory → that directory's `AGENTS.md`. True of the whole project, or of no particular directory → `context/`.**
 
 Two axes, deliberately. Location-local docs sit next to the code they govern, so they get updated when that code changes. Cross-cutting facts — the architecture, the glossary, the reason a decision was made — have no directory to live in, so they get a folder of their own.
 
-`AGENTS.md` is the entry point because every major agent loads it automatically. Nothing loads `context/` on its own — the rail's index is what makes it reachable.
+`AGENTS.md` is the entry point because every major agent loads it automatically. Nothing loads `context/` or existing project docs on its own — the rail's index is what makes the graph reachable.
 
 ## Why not just write the docs yourself
 
