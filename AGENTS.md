@@ -62,9 +62,10 @@ deliberately left alone.
 - [skills/context/SKILL.md](./skills/context/SKILL.md) — the `/context` skill: bootstrap,
   adopt, and drift-check a repository's agent-context graph while reusing authoritative
   project docs. Its `references/` hold the formats it emits.
+- [fixtures/AGENTS.md](./fixtures/AGENTS.md) — disposable external repositories used to
+  field-test skills from minimal bootstrap cases through large hierarchical adoption
 
-No child `AGENTS.md` files and no `context/` folder yet — this repo is one skill and
-eight rules, so neither has earned its place. Per
-[references/AGENTS-CHILD.md](./skills/context/references/AGENTS-CHILD.md), a directory
-gets its own doc when it is a lasting boundary with rules of its own. Add the second
-skill and `skills/context/` will qualify.
+No `context/` folder yet. The fixture lab has its own child rail because external nested
+repositories are a lasting test boundary with reset and upstream-safety rules. The
+single-skill `skills/context/` directory remains governed here; add its child rail when
+a second skill gives that directory rules of its own.
