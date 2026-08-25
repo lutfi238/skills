@@ -38,11 +38,36 @@ Why the split: local rules belong next to the code so they get updated when that
 
 `AGENTS.md` is the entry point because every major agent reads it. `context/` files are **not** auto-loaded — they are reachable only because the rail indexes them. An unindexed file is an invisible file.
 
+## Step 0 — Freeze the write boundary. Before anything else.
+
+Run this checkpoint before the first edit:
+
+1. Capture every changed and untracked path. With Git, use
+   `git status --porcelain=v1 --untracked-files=all`.
+2. Fingerprint the content or absence state of every pre-existing changed path. With
+   Git, use `git hash-object --no-filters -- <path>` for files that exist. A status or
+   diff-stat match is not proof that content stayed unchanged.
+3. Declare the complete write set as repo-relative paths with `/` separators. Accept a
+   target only when it matches `(^|/)AGENTS\.md$` or `^context/`. Existing README,
+   source, config, ignore, docs, and vendor instruction files are protected evidence.
+4. Send the user a checkpoint naming the baseline, writable targets, and protected
+   dirty paths. Do not issue an edit, write, or patch call before this checkpoint.
+
+Before every write tool call, compare its literal target with both the declared write
+set and the allowlist. A failed comparison cancels the call; report the useful change as
+protected-doc drift instead. Discovery never expands the write set silently: declare an
+additional allowed target to the user before writing it.
+
+At closeout, repeat the status and fingerprints. Every pre-existing path must either be
+byte-identical or be an allowed declared target changed by this run. Every new or
+changed path attributable to the run must be allowed and declared. An attributable
+violation blocks completion; undo only this run's isolated edit when that cannot erase
+pre-existing work, otherwise stop and report it.
+
 ## Step 1 — Survey. Always.
 
 Never write a doc from a skim. Establish, from the repo itself:
 
-- **Baseline and write set.** Record the initial changed paths, including untracked files, so existing user work is never attributed to this run. Before editing, list every intended target. Reject any target that is not an `AGENTS.md` file or inside root `context/`; discovering useful adjacent edits does not expand the allowlist.
 - **Existing docs.** `AGENTS.md`, `CLAUDE.md`, `README.md`, `CONTEXT.md`, `.cursorrules`, `.github/copilot-instructions.md`, `docs/`, any nested `AGENTS.md`, and authoritative product or requirements docs such as `PRD.md`, `REQUIREMENTS.md`, and `SPEC.md`.
 - **Whether each proposed doc is gitignored.** Check every intended `AGENTS.md` and `context/` path against all applicable ignore files, including nested ones; use `git check-ignore -v --no-index -- <path>` when Git is available. A repo that ignores agent docs has decided they stay local. Honour that: leave ignore files alone, identify each local-only node in the report, and warn when a tracked index points to an ignored node that will be absent from a fresh clone.
 - **Project type and manifest.** `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `composer.json`, etc. Pull the real script names from it.
@@ -54,6 +79,18 @@ Build an authority map before creating files: subject → existing source → wh
 claims agree with current code/config → uncovered facts. Do not index a document as an
 authority when a relevant claim conflicts with the repository; report the conflict and
 index a reliable source instead, or leave that subject without an authority.
+
+Before the first write, send the user a proof ledger for every proposed exceptional
+claim:
+
+- **Absolute** — quote each use of `all`, `every`, `never`, `only`, `full`,
+  `deliberate`, `broken`, or `does not sync`, and name the complete surface checked.
+- **Intent or history** — quote the claim and cite the user or human-authored source.
+- **Naming prohibition** — list each proposed glossary `_Avoid_` term and cite the user
+  or human-authored source that rejects it. Code usage or the absence of an alias is not
+  authority for a naming ban.
+
+Narrow or omit any entry without the required proof. An empty ledger is valid.
 
 Then pick a route:
 
@@ -104,12 +141,14 @@ When invoked after a code change rather than as a standalone audit, scope the pa
 
 ## Hard rules
 
-- **Touch only `AGENTS.md` files and `context/`.** Nothing else. Not `.gitignore`, not `README.md`, not source, not config — even when you spot something wrong in them. Report it instead. A documentation pass that edits unrelated files is indistinguishable from an agent going off-task, and it is the fastest way to lose a user's trust in the tool.
-- **Gate every write twice.** Before each edit, match its target against `(^|/)AGENTS\.md$` or `^context/`; reject it otherwise. Before reporting completion, compare the run's actual write set with the declared write set and the initial worktree baseline. Any attributable path outside the allowlist blocks completion; undo only the run's own isolated edit when that can be done without touching pre-existing user work, otherwise stop and report the violation.
+- **The Step 0 write firewall is blocking.** Protected paths are read-only evidence even
+  when correcting them would be useful. Skipping its pre-write checkpoint or exact
+  closeout comparison means the pass is incomplete.
 - **Never delete or rewrite an existing agent file on your own initiative.** `CLAUDE.md`, `.cursorrules`, `GEMINI.md`, `.windsurfrules`, a hand-written `AGENTS.md` — read them, fold their content into the rail, and leave the originals exactly as they are. The user put them there. If the user asks you to remove one, do it — this rule constrains what you do unasked.
 - **Never create an agent-specific instruction file.** `AGENTS.md` and `context/` are the deliverable. Report the bridge line for other clients; let the user add it.
 - **Write only what you verified from a repository source of truth or the user.** Everything else is a `> TODO(human): <specific question>` marker. Implementation proves current behavior, not product intent or historical reasoning. Docs that are confidently wrong are worse than absent, because the next agent trusts them.
-- **Treat absolutes as proof obligations.** Before writing `all`, `every`, `never`, `only`, `full`, `deliberate`, `broken`, or `does not sync`, verify the complete relevant surface or replace the absolute with the narrower fact you proved. Absolutes amplify one missed call site into a false contract.
+- **The proof ledger is a write gate.** Missing authority means narrow or omit the
+  claim; it never means infer intent, history, or a naming ban from implementation.
 - **An empty section beats an invented one.** Leave the heading, leave it blank.
 - **Never overwrite a doc wholesale.** Amend the lines that are wrong. Hand-written "why" is the most valuable content in any of these files and regeneration destroys it.
 - **Stable contracts, not diary entries.** Docs describe how things are now. Delete superseded statements instead of narrating the change. `context/decisions/` is the one exception — that is where history is allowed to live.
