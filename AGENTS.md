@@ -57,6 +57,14 @@ deliberately left alone.
 
 ## Index
 
+### Cross-cutting
+
+- [README.md](./README.md) — read for the public contract: what the `/context` skill
+  claims to do, how it is installed, and the model it emits
+- [HANDOFF.md](./HANDOFF.md) — read for current verification state and unfinished work.
+  A snapshot, not a contract: verify its claims before acting on them, and do not treat it
+  as an authority for how the skill behaves.
+
 ### By area
 
 - [skills/context/SKILL.md](./skills/context/SKILL.md) — the `/context` skill: bootstrap,

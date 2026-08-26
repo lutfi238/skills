@@ -4,6 +4,12 @@ Facts true of the whole project, or of no particular directory. Everything here 
 
 Create a file only when you can fill it from a repository source of truth or information explicitly supplied by the user. Six honest files beat nine padded ones. One honest file is also a valid result when existing docs and local `AGENTS.md` files cover the rest.
 
+**The creation test.** Before adding a file, ask what happens if you skip it: does the
+information disappear, or does it only move to another file? If it moves, do not create
+the file. A file restating the manifest, the README, or a sibling `context/` entry fails
+this test — the manifest and the README are already the source of truth, so the copy is
+wrong at the next dependency bump or README edit and nothing reports it.
+
 **Prefer indexing over duplicating.** If the repo's `README.md` or `docs/` already covers something well — architecture, setup, commands — index it from the rail with a "read this when…" hook instead of restating it in a `context/` file. A second copy is a second thing to drift. Write a `context/` file only for what no existing doc covers.
 
 ---
@@ -122,6 +128,11 @@ malformed-payload failures actually happen.
 
 That last kind of entry — "this looks wrong, here is why it stays" — prevents an agent from helpfully deleting load-bearing code.
 
+This is not a known-issues or tech-debt list. An issue tracker records bugs with an owner
+and a date and does it better; a bug list in `context/` goes stale the week the bug is
+fixed and then reads as a current defect. Keep only the entries with no other home: code
+that looks wrong and must stay, and traps that fire the same way every time.
+
 ---
 
 ## `context/conventions.md`
@@ -219,6 +230,29 @@ Rules:
 - **Status values**: `Proposed`, `Accepted`, `Superseded by ADR-NNNN`. Superseded ADRs stay — they are the record.
 - **Never edit an accepted ADR** except to change its status. Write a new one.
 - Reference them from `gotchas.md` where relevant. "This looks wrong — see ADR-0007" is the pairing that stops an agent from undoing a deliberate decision.
+
+---
+
+## Session-state documents
+
+A `HANDOFF.md`, `PROGRESS.md`, `STATUS.md`, or similar file records where work stopped:
+current verification state, unfinished work, next action. It is a different genre from
+every file above — those state how the project *is*, this one states where the *work* is.
+
+- **Never create one.** It is the user's working note, not a generated artifact.
+- **Never delete or restructure an existing one.** The no-diary rule governs contract
+  docs. It is not licence to remove a file whose entire purpose is current state.
+- **Index it narrowly or not at all.** A hook may point at current state and next action.
+  Never index it as the authority for architecture, commands, or structure — those claims
+  are snapshots, and a stale snapshot holding index authority is exactly the
+  misinformation the graph exists to prevent.
+- **Report its drift; do not edit it.** A root session-state file is outside the write
+  allowlist. Its claims are checkable — revisions, paths, worktree state, pending
+  decisions — and a line saying a change is awaiting the user's decision after that change
+  landed reads as current fact to the next agent.
+
+Keep it out of `context/`. A file true only until the next commit does not belong in the
+folder holding the project's stable contracts.
 
 ---
 

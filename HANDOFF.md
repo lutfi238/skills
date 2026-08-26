@@ -12,27 +12,31 @@ pure Markdown and has no runtime dependencies.
 Current committed revision:
 
 ```text
-9514e1a Refine proof ledger guidelines for exceptional claims and clarify documentation responsibilities
+7b4d19b Remove Handoff.md from .gitignore and add initial Handoff documentation
 ```
 
-That revision matches `origin/main`. Its only change is
-`skills/context/SKILL.md` (`24` insertions, `10` deletions).
+That commit resolved the two files the previous handoff left pending: `HANDOFF.md` is now
+tracked, and `.gitignore` no longer ignores it. No decision on those two remains open.
 
-Current parent worktree before this handoff update:
+Current parent worktree:
 
 ```text
- M .gitignore
-?? HANDOFF.md
+ M AGENTS.md
+ M HANDOFF.md
+ M skills/context/SKILL.md
+ M skills/context/references/CONTEXT-FILES.md
+ M skills/context/references/UPDATE.md
 ```
 
-The `.gitignore` modification removes `HANDOFF.md` from the ignore list. Treat it as a
-pre-existing user change; do not amend or revert it without an explicit request. This
-handoff is consequently untracked until the user decides whether to commit it.
+These five edits are uncommitted and belong to one change: it adds the session-state
+document genre, a file-creation test, the gotchas versus known-issues distinction, and a
+cross-cutting index group to the repository's own rail.
 
 ## Functional status
 
-The `context` skill is functional against the current four-tier fixture contract. Four
-fresh independent subagent runs passed on the same installed revision:
+The `context` skill passed the four-tier fixture contract at revision `9514e1a`
+(`SKILL.md` SHA-256 `C0D319C5...`). Four fresh independent subagent runs passed on that
+installed revision:
 
 | Tier | Fixture | Route | Result |
 | --- | --- | --- | --- |
@@ -45,6 +49,11 @@ The result establishes the tested behavior, not universal correctness for every
 repository. The fixture runs were source-level documentation audits: dependencies were
 not installed, and build/runtime commands were not executed unless already available
 without installation.
+
+**The uncommitted working revision has not been run against the ladder.** The rules added
+since `9514e1a` are untested: session-state handling, the file-creation test, the gotchas
+versus known-issues boundary, and the cross-cutting index entries. Treat the table above as
+evidence for `9514e1a` only.
 
 ## Final hardening
 
@@ -70,20 +79,17 @@ npx skills add . --list
 
 Expected result: `Found 1 skill`, named `context`.
 
-The final source and installed copies share this SHA-256:
+Source and installed copies currently differ. The working `SKILL.md` is ahead of every
+installed copy, so no installed agent is running the working rules:
 
 ```text
-C0D319C5EBC66A169EED37283DF2A6705F0B8DC6FEADE2FF1AA0D56C0D378FE8
+100F59EF5B704FA848284AC2695AA803107971A72ECE662851A57398631F77C7  skills/context/SKILL.md
+C0D319C5EBC66A169EED37283DF2A6705F0B8DC6FEADE2FF1AA0D56C0D378FE8  C:\Users\mulfis\.agents\skills\context\SKILL.md
+C0D319C5EBC66A169EED37283DF2A6705F0B8DC6FEADE2FF1AA0D56C0D378FE8  C:\Users\mulfis\.claude\skills\context\SKILL.md
+C0D319C5EBC66A169EED37283DF2A6705F0B8DC6FEADE2FF1AA0D56C0D378FE8  C:\Users\mulfis\.mirasim\skills\context\SKILL.md
 ```
 
-Matching locations:
-
-```text
-skills/context/SKILL.md
-C:\Users\mulfis\.agents\skills\context\SKILL.md
-C:\Users\mulfis\.claude\skills\context\SKILL.md
-C:\Users\mulfis\.mirasim\skills\context\SKILL.md
-```
+Reinstall before any fixture run, then confirm all four hashes match again.
 
 Also verified:
 
@@ -127,14 +133,17 @@ unchanged:
 
 ## Next action
 
-No skill fix is currently required by the fixture ladder. For another change:
+Revalidate the uncommitted working revision. It has not been run against the ladder:
 
-1. Preserve the current parent worktree baseline.
-2. Run discovery and `git diff --check` after editing.
-3. Install the candidate skill globally and confirm the installed hash matches source.
-4. Run fixtures Low through Extreme in order, stopping at the first boundary or factual
-   failure.
-5. Stash useful results before returning each fixture to its clean pinned baseline.
+1. Reinstall the skill globally and confirm the installed hash matches source.
+2. Run fixtures Low through Extreme in order, stopping at the first boundary or factual
+   failure. Watch specifically for the untested rules: whether the file-creation test
+   suppresses a file that would only relocate information, and whether a fixture carrying
+   its own session-state file is left unedited and indexed narrowly.
+3. Stash useful results before returning each fixture to its clean pinned baseline.
+4. Commit only after the ladder passes on the working revision.
 
-Do not commit or push fixture changes. Do not commit the parent `.gitignore` or this
-handoff until the user chooses how those two files should be handled.
+For any subsequent change, run discovery and `git diff --check` after editing, then repeat
+the sequence above.
+
+Do not commit or push fixture changes.

@@ -105,6 +105,17 @@ Code and comments establish behavior, not durable product policy, historical rat
 or future maintenance plans. Attribute those claims to an authoritative human source or
 replace them with a specific `TODO(human)` question.
 
+### 12. Session-state documents
+
+A `HANDOFF.md`, `PROGRESS.md`, or `STATUS.md` is a snapshot, so it drifts fastest and
+gives no warning when it does. Check its claims like any other doc: named revisions
+against the log, paths against disk, described worktree or branch state against real
+status, and pending decisions against whether they landed.
+
+A root session-state file is outside the write allowlist, so report its drift rather than
+editing it. Never promote it to an authority for a stable subject, and never treat the
+no-diary rule as grounds to delete it — see `references/CONTEXT-FILES.md`.
+
 ## Amend, never regenerate
 
 - Change the wrong lines. Leave everything else byte-identical.
