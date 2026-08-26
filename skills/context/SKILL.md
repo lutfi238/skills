@@ -80,6 +80,12 @@ claims agree with current code/config → uncovered facts. Do not index a docume
 authority when a relevant claim conflicts with the repository; report the conflict and
 index a reliable source instead, or leave that subject without an authority.
 
+Verify every path before repeating it, including paths copied out of a manifest, lock file,
+CI config, or ignore list. A configuration naming a path proves the configuration names it,
+not that the path exists; stale entries are common, and repeating one manufactures a false
+claim in a doc that is otherwise correct. When the entry is stale, report it as
+protected-doc drift and state the real path instead of the named one.
+
 When an architecture or ownership entry groups multiple paths, verify that its stated
 responsibility is true for every path in the group. Split mixed groups rather than
 assigning one path's purpose to its neighbours; directory names and partial overlap do
@@ -115,12 +121,18 @@ Then pick a route:
 Evaluate the rows from top to bottom. A README alone does not select Adopt. State which
 route you took and why before writing anything.
 
+A rail is **usable** only when it carries the protocol block and an index whose entries
+resolve. A file named `AGENTS.md` that holds rules but indexes nothing — including one that
+only defers to another document — is guidance, not a rail: route to Adopt, preserve its text
+byte-for-byte, and add the protocol and index around it. Without this test a repository with
+a thin rail and unindexed nested rails matches no row, and the route becomes a coin flip.
+
 ## Bootstrap
 
 1. **Write the rail first** — `AGENTS.md` at the root, per `references/AGENTS-ROOT.md`. It carries the protocol block, project-wide rules, and the index. Nothing else works without it.
 2. **Reuse before creating.** Index authoritative existing docs for the subjects they already cover. Add only the `context/` files you can fill with verified, nonduplicated facts. Start with `architecture.md`, `workflows.md`, and `gotchas.md` when those subjects lack a home. Add `glossary.md` when the domain has real vocabulary and `conventions.md` when the codebase has consistent unwritten style. Add product context only from an authoritative document or the user, never by inferring intent from implementation. Skip a file rather than pad it: if skipping a file would only move its information to another file, it should not exist. Formats in `references/CONTEXT-FILES.md`.
 3. **Create child `AGENTS.md` only at lasting boundaries** — a directory with its own purpose, its own rules, or its own contract with the rest of the system. Format in `references/AGENTS-CHILD.md`. Three well-placed child docs beat fifteen that restate the rail.
-4. **Index everything.** Every `context/` file and every child `AGENTS.md` gets a line in the rail's index with a short "read this when…" hook. Unindexed means invisible.
+4. **Index everything, then account for what is absent.** Every `context/` file and every child `AGENTS.md` gets a line in the rail's index with a short "read this when…" hook. Unindexed means invisible. Close the index with a coverage note naming the nodes a reader would expect and not find, and why — sparse output is only legible if the absences are written down. Format in `references/AGENTS-ROOT.md`.
 5. **Never create agent-specific instruction files.** Not `CLAUDE.md`, not `.cursorrules`, not `.github/copilot-instructions.md`. `AGENTS.md` is the deliverable. Some clients need a bridge file to see it — say so in your report and give the user the exact line, but let them decide. See `references/AGENTS-ROOT.md`.
 
 No ADRs on bootstrap. You don't know why past decisions were made — say so with a `TODO(human)` marker instead of guessing.
@@ -168,7 +180,7 @@ When invoked after a code change rather than as a standalone audit, scope the pa
 - **Stable contracts, not diary entries.** Docs describe how things are now. Delete superseded statements instead of narrating the change. `context/decisions/` is the one exception — that is where history is allowed to live.
 - **A session-state file is not a contract doc.** An existing `HANDOFF.md`, `PROGRESS.md`, or `STATUS.md` records where work stopped, not how the project is. Never create one, never delete or restructure one, never index it as the authority for a stable subject, and keep it out of `context/`. It sits outside the write allowlist, so report its drift instead of correcting it. See `references/CONTEXT-FILES.md`.
 - **Broad rules up, specific details down.** A rule that holds everywhere belongs in the rail. On conflict, the doc closest to the code wins on local detail; the rail wins on project-wide policy.
-- **Keep it operational.** Prose an agent can act on. No filler, no restating the obvious, no summarizing the README.
+- **Keep it operational, for two readers.** Prose an agent can act on and a person can scan. The generated docs are read by both: the rail's opener and every index hook must orient a human returning after a month, and below them stay terse. No filler, no restating the obvious, no summarizing the README.
 - **Don't document generated or vendored trees.** `node_modules/`, `dist/`, `build/`, `target/`, `.venv/`, lockfiles.
 
 ## Report
@@ -183,7 +195,7 @@ Close with a coverage report that makes sparse output legible:
 - **Distribution** — ignored or otherwise local-only graph nodes and the indexes that depend on them.
 - **Conflicts** — stale or contradictory protected docs left unchanged and whether they were excluded as authorities.
 - **Validation** — checks actually executed and their outcomes, kept separate from commands merely declared by manifests or CI.
-- **Skipped** — likely context files not created because an existing source already covers them, no verified content exists, or the category does not apply.
+- **Skipped** — likely context files not created because an existing source already covers them, no verified content exists, or the category does not apply. The same absences belong in the rail's coverage note: this report is scrollback, that copy survives.
 - **Questions** — every `TODO(human)` marker and where it lives.
 - **Untouched** — relevant files deliberately left alone and why.
 

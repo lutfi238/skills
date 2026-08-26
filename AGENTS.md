@@ -73,7 +73,11 @@ deliberately left alone.
 - [fixtures/AGENTS.md](./fixtures/AGENTS.md) — disposable external repositories used to
   field-test skills from minimal bootstrap cases through large hierarchical adoption
 
-No `context/` folder yet. The fixture lab has its own child rail because external nested
-repositories are a lasting test boundary with reset and upstream-safety rules. The
-single-skill `skills/context/` directory remains governed here; add its child rail when
-a second skill gives that directory rules of its own.
+### Coverage
+
+- No `context/` folder yet: every cross-cutting fact so far is either project-wide policy
+  (this file) or one of the formats the skill emits (`skills/context/references/`).
+- The fixture lab has its own child rail because external nested repositories are a lasting
+  test boundary with reset and upstream-safety rules.
+- `skills/context/` has no child rail: one skill, no rules of its own beyond this file. Add
+  one when a second skill gives that directory local rules.

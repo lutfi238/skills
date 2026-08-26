@@ -4,12 +4,18 @@ The one document every agent loads. It holds what is true everywhere, the protoc
 
 Keep it short. It is loaded on every single request in this repo, whether or not it is needed. Detail goes in a child doc or a `context/` file; the rail points at them.
 
+**Two readers.** An agent loads this file to work; a person opens it to remember. The
+opener and the index hooks must serve both — the agent needs routing, the person needs to
+know what this project is and where things live without reading the code first. Everything
+below the index can be terse and operational; those two parts cannot.
+
 ## Section order
 
 ```md
 # <Project name>
 
-<One or two sentences: what this project is, who it serves.>
+<One or two sentences: what this project is, who it serves. Written for a person opening
+the repo cold, not only for the agent routing through it.>
 
 ## Documentation protocol
 
@@ -25,7 +31,7 @@ Keep it short. It is loaded on every single request in this repo, whether or not
 
 ## Index
 
-<The index — format below.>
+<The index, then the coverage note — formats below.>
 ```
 
 Omit `Preferences` on bootstrap; add it the first time the user states a durable preference.
@@ -66,7 +72,7 @@ deliberately left alone.
 
 ## The index
 
-Two groups. Every entry needs a "read this when…" hook — without one, an agent cannot tell whether it needs the file, so it either reads everything or nothing.
+Two groups. Every entry needs a "read this when…" hook — without one, an agent cannot tell whether it needs the file, so it either reads everything or nothing. Write the hook so a person scanning the list can also tell which file answers their question; a hook that only a machine can use makes the rail useless as a landing page.
 
 The cross-cutting group may point directly to an authoritative existing `README.md`, PRD, specification, schema, or document under `docs/`. Index the source instead of copying it into `context/`. Include `context/README.md` only when that folder has three or more indexed entries besides the README itself.
 
@@ -105,6 +111,35 @@ Trackability is part of reachability. Check each indexed agent-context path agai
 effective ignore rules, including nested `.gitignore` files. An ignored child rail may
 work locally while leaving a broken index after commit or on a fresh clone; identify it
 as local-only in the report and leave the ignore policy unchanged.
+
+## Coverage
+
+Sparsity is a result, not a gap — but only if it is written down. Close the index with a
+short note naming the nodes a reader would expect to find and will not, and why.
+
+```md
+### Coverage
+
+- Architecture and setup live in [README.md](./README.md), indexed above — not restated in
+  `context/`.
+- No `context/database.md`: this project has no database.
+- No `context/glossary.md`: the domain vocabulary is generic.
+- `src/worker/` has no child rail: it is one file with no rules of its own.
+```
+
+Without this, a `context/` holding two files is indistinguishable from an abandoned run.
+The next reader — human or agent — re-derives the same absent files and writes them, which
+is how a lean graph silently grows into the padded scaffold the model rejects. The coverage
+report sent at the end of a run is scrollback; this is the copy that survives on disk.
+
+Write an absent node as inline code — `` `context/glossary.md` `` — never as a markdown
+link. A link to a file that does not exist is a broken index entry: it fails the
+both-directions check in `UPDATE.md`, and it teaches the reader that the rail's links
+cannot be trusted. Only nodes that exist are linked, and those belong in the index above,
+not here.
+
+Keep it to absences a reader would reasonably expect. Do not enumerate every file the
+project does not have.
 
 ## Project-wide rules
 

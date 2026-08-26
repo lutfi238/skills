@@ -29,6 +29,15 @@ Extract every repo path mentioned in every doc — code fences, links, inline ba
 - **Gone** → find where it moved. Moved: update the reference. Deleted: delete the claim, and delete the whole doc if that path was its subject.
 - **Renamed** → update every mention, not just the first one you found.
 
+Resolve a path the way its own document does: a path in a nested `AGENTS.md` is relative to
+that doc's directory, not to the repository root. Checking every path from the root produces
+both false alarms and missed breaks.
+
+Apply this check to the claims a pass **writes**, not only to the ones it finds. A path
+lifted from a manifest, an exclude list, or a CI config is unverified until confirmed on
+disk — a stale config entry repeated into a fresh doc is a new false claim, not inherited
+drift.
+
 Highest-yield check. Path references break constantly and break loudly once an agent tries to follow one.
 
 ### 2. Command claims
@@ -50,6 +59,13 @@ claims such as “all commands were run” unless the command log proves each on
 - Every `context/*.md` on disk appears in the rail's index. When `context/` has three or more indexed entries besides its README, every other entry also appears in `context/README.md`; below that threshold, remove the redundant README.
 - Every nested `AGENTS.md` on disk is reachable from the rail through a chain of indexes. Find all of them and trace each one up.
 - Every indexed agent-context path has its effective ignore policy checked, including nested `.gitignore` files. Use `git check-ignore -v --no-index -- <path>` when available. Report each ignored node as local-only and warn when a tracked index will point to a file absent from a fresh clone.
+
+- Every absence claimed in the rail's coverage note is still absent. A line saying there is
+  no `context/glossary.md` is a false claim once one exists — delete the line when the node
+  appears, and add a line when this pass decides against a node a reader would expect.
+  Coverage lines are not index entries: they name absent nodes in inline code, so exclude
+  them when resolving links. A coverage entry written as a link is itself the defect — the
+  path does not exist, which is the point.
 
 A doc nobody links to gets stale fastest, because nobody reads it to notice.
 
